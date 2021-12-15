@@ -15,7 +15,6 @@ function Statistics() {
                 minutes: _.sumBy(element, 'duration')
             })).value());
         })
-        /* .then(groupedArrays.forEach(element => console.log(element))) */
         .catch(err => console.error(err))
     }
 
@@ -31,7 +30,6 @@ function Statistics() {
             <YAxis />
             <Tooltip />
             <Legend />
-            {/* <Bar dataKey="pv" fill="#8884d8" /> */}
             <Bar dataKey="minutes" fill="#3c9690" />
         </BarChart>
     </div>

@@ -22,7 +22,7 @@ function EditTraining(props) {
     const handleClickOpen = () => {
         setCustomerName(props.params.data.customer.firstname + " " + props.params.data.customer.lastname)
         setTraining({
-            date: props.params.data.date,
+            date: props.params.data.date, //we don't have to format the date since mui is doing it for us
             duration: props.params.data.duration,
             activity: props.params.data.activity,
 
