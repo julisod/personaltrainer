@@ -1,6 +1,7 @@
 import EditCustomer from './EditCustomer';
 import AddCustomer from './AddCustomer';
 import React, {useEffect, useState} from 'react';
+import { addCustomer, editItem } from '../services/ApiServices'
 
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -84,73 +85,60 @@ function Customerlist(props) {
     }, [])
     
     const handleErrorClose = (event, reason) => {
-        if (reason === 'clickaway') {
-          return;
+        if (reason !== 'clickaway') {
+            setErrorOpen(false);
         }
-    
-        setErrorOpen(false);
       };
-
-    const deleteTrainings = (customerUrl) => {
-        //jotain looppeja idk
-    }
 
     const deleteCustomer = (url) => {
         fetch(url, { method: "DELETE"})
         .then(response => {
             if (response.ok) {
-                fetchCustomers();
                 setMsg("Poisto onnistui");
                 setOpen(true);
             } else {
                 setErrorMsg("Jokin meni pieleen poistamisessa :(");
                 setErrorOpen(true);
             }
+            fetchCustomers();
         })
         .catch(err => console.error(err))
     }
 
-    const addCustomer = (customer) => {
-        fetch("https://customerrest.herokuapp.com/api/customers", {
-            method: "POST",
-            headers: { "Content-type" : "application/json"},
-            body: JSON.stringify(customer)
-        })
+    const newCustomer = (customer) => {
+        addCustomer(customer)
         .then(response => {
             if (response.ok) {
                 fetchCustomers();
                 setMsg("Lisäys onnistui");
                 setOpen(true);
             } else {
-                alert("Jokin meni vikaan lisäyksessä");
-            }
-        })
-        .catch(err => console.error(err))
-    }
-
-    const updateCustomer = (url, updatedCustomer) => {
-        fetch(url, {
-            method: "PUT",
-            headers: { "Content-Type" : "application/json"},
-            body: JSON.stringify(updatedCustomer)
-        })
-        .then(response => {
-            if (response.ok) {
-                fetchCustomers();
-                setMsg("Muokkaus onnistui");
-                setOpen(true);
-            } else {
-                setErrorMsg("Jokin meni vikaan muokkauksessa :c");
+                setErrorMsg("Jokin meni vikaan lisäyksessä :/");
                 setErrorOpen(true);
             }
         })
         .catch(err => console.error(err))
     }
 
+    const updateCustomer = (url, updatedCustomer) => {
+        editItem(url, updatedCustomer)
+        .then(response => {
+            if (response.ok) {
+                setMsg("Muokkaus onnistui");
+                setOpen(true);
+            } else {
+                setErrorMsg("Jokin meni vikaan muokkauksessa :c");
+                setErrorOpen(true);
+            }
+            fetchCustomers();
+        })
+        .catch(err => console.error(err))
+    }
+
     return (
         <div className="App">
-            <AddCustomer addCustomer={addCustomer}/>
-            <div className="ag-theme-material" style={{height: 600, width: "90%", maxWidth : "1400px", margin: "auto"}}>
+            <AddCustomer newCustomer={newCustomer}/>
+            <div className="ag-theme-material" style={{height: 593, width: "90%", maxWidth : "1400px", margin: "auto"}}>
                 <AgGridReact
                     rowData={customers}
                     columnDefs={columns}
@@ -171,7 +159,7 @@ function Customerlist(props) {
                     {errorMsg}
                 </Alert>
             </Snackbar>
-            <Button onClick={() => onBtnExport()}>Export</Button>
+            <Button variant="outlined" color="success" sx={{color: '#3c9690'}} onClick={() => onBtnExport()}>Export</Button>
         </div>
     );
 }

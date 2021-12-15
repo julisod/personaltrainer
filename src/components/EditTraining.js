@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import dayjs from 'dayjs'
 
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -17,16 +16,15 @@ import DateTimePicker from '@mui/lab/DateTimePicker';
 
 function EditTraining(props) {
     const [open, setOpen] = useState(false);
-    const [training, setTraining] = useState({date: new Date(), duration:"", activity:""/* , customer:"" */});
+    const [training, setTraining] = useState({date: new Date(), duration:"", activity:""});
     const [customerName, setCustomerName] = useState("");
 
     const handleClickOpen = () => {
         setCustomerName(props.params.data.customer.firstname + " " + props.params.data.customer.lastname)
         setTraining({
-            date: dayjs(props.params.data.date).format("DD.MM.YYYY (ddd) H:mm"),
+            date: props.params.data.date,
             duration: props.params.data.duration,
             activity: props.params.data.activity,
-            //customer: props.params.data.customer.links[0].href,
 
         })
         setOpen(true);

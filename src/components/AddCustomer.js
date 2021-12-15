@@ -21,7 +21,7 @@ function AddCustomer(props) {
     };
   
     const handleSave = () => {
-        props.addCustomer(customer);
+        props.newCustomer(customer);
         handleClose();
       };
 
@@ -31,8 +31,7 @@ function AddCustomer(props) {
 
     return (
       <div className="App">
-          {/* tän tyyliä vois muuttaa */}
-        <Button variant="outlined" onClick={handleClickOpen} sx={{margin: "15px"}}>
+        <Button variant="contained" color="success" onClick={handleClickOpen} sx={{margin: "15px", backgroundColor: '#3c9690'}}>
           Add customer
         </Button>
         <Dialog

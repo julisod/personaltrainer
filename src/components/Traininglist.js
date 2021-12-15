@@ -1,5 +1,6 @@
 import EditTraining from './EditTraining';
 import AddTraining from './AddTraining';
+import { addTraining, editItem } from '../services/ApiServices';
 import React, {useEffect, useState} from 'react';
 import dayjs from 'dayjs'
 
@@ -10,14 +11,17 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 
+import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { Popconfirm } from 'antd';
 import "antd/dist/antd.css";
 
+
 function Traininglist(props) {
     const [trainings, setTrainings] = useState([]);
+    const [gridApi, setGridApi] = useState(null);
     const [open, setOpen] = useState(false);
     const [msg, setMsg] = useState("");
     const [errorOpen, setErrorOpen] = useState(false);
@@ -68,12 +72,19 @@ function Traininglist(props) {
         }
     ]
 
+    const onGridReady = (params) => {
+        setGridApi(params.api);
+    };
+
+    const onBtnExport = () => {
+        gridApi.exportDataAsCsv();
+    };
+
     const fetchTrainings = () => {
             fetch("https://customerrest.herokuapp.com/gettrainings")
             .then(response => response.json())
             .then(responseData => setTrainings(responseData))
-            .catch(err => console.error(err))
-            
+            .catch(err => console.error(err))        
     }
 
     useEffect(() => {
@@ -84,7 +95,6 @@ function Traininglist(props) {
         if (reason === 'clickaway') {
           return;
         }
-    
         setErrorOpen(false);
       };
 
@@ -96,27 +106,24 @@ function Traininglist(props) {
                 setMsg("Poisto onnistui");
                 setOpen(true);
             } else {
-                setErrorMsg("Jokin meni pieleen treenin poistamisessa :(");
+                setErrorMsg("Jokin meni pieleen poistamisessa :(");
                 setErrorOpen(true);
             }
         })
         .catch(err => console.error(err))
     }
 
-    const addTraining = (training) => {
+    const newTraining = (training) => {
         training.date = training.date.toISOString();
-        fetch("https://customerrest.herokuapp.com/api/trainings", {
-            method: "POST",
-            headers: { "Content-type" : "application/json"},
-            body: JSON.stringify(training)
-        })
+        addTraining(training)
         .then(response => {
             if (response.ok) {
                 fetchTrainings();
                 setMsg("Lisäys onnistui");
                 setOpen(true);
             } else {
-                alert("Jokin meni vikaan lisäyksessä");
+                setErrorMsg("Jokin meni vikaan lisäyksessä :/");
+                setErrorOpen(true);
             }
         })
         .catch(err => console.error(err))
@@ -124,34 +131,31 @@ function Traininglist(props) {
 
     const updateTraining = (id, updatedTraining) => {
         updatedTraining.date = updatedTraining.date.toISOString();
-        fetch("https://customerrest.herokuapp.com/api/trainings/" + id, {
-            method: "PUT",
-            headers: { "Content-Type" : "application/json"},
-            body: JSON.stringify(updatedTraining)
-        })
+        editItem("https://customerrest.herokuapp.com/api/trainings/" + id, updatedTraining)
         .then(response => {
             if (response.ok) {
-                fetchTrainings();
                 setMsg("Muokkaus onnistui");
                 setOpen(true);
             } else {
                 setErrorMsg("Jokin meni vikaan muokkauksessa :c");
                 setErrorOpen(true);
             }
+            fetchTrainings();
         })
         .catch(err => console.error(err))
     }
 
     return (
-        <React.Fragment>
-            <AddTraining addTraining={addTraining}/>
-            <div className="ag-theme-material" style={{height: 600, width: "80%", maxWidth : "900px", margin: "auto"}}>
+        <div className="App">
+            <AddTraining newTraining={newTraining}/>
+            <div className="ag-theme-material" style={{height: 593, width: "85%", maxWidth : "900px", margin: "auto"}}>
                 <AgGridReact
                     rowData={trainings}
                     columnDefs={columns}
                     pagination={true}
                     paginationPageSize={10}
                     suppressCellSelection={true}
+                    onGridReady={onGridReady}
                 />
             </div>
             <Snackbar
@@ -165,7 +169,8 @@ function Traininglist(props) {
                     {errorMsg}
                 </Alert>
             </Snackbar>
-        </React.Fragment>
+            <Button variant="outlined" color="success" sx={{color: '#3c9690'}} onClick={() => onBtnExport()}>Export</Button>
+        </div>
     );
 }
 export default Traininglist;
