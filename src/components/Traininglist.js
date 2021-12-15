@@ -114,7 +114,6 @@ function Traininglist(props) {
     }
 
     const newTraining = (training) => {
-        training.date = training.date.toISOString();
         addTraining(training)
         .then(response => {
             if (response.ok) {
@@ -130,7 +129,6 @@ function Traininglist(props) {
     }
 
     const updateTraining = (id, updatedTraining) => {
-        updatedTraining.date = updatedTraining.date.toISOString();
         editItem("https://customerrest.herokuapp.com/api/trainings/" + id, updatedTraining)
         .then(response => {
             if (response.ok) {

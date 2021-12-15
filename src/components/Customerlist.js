@@ -17,7 +17,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Popconfirm } from 'antd';
 import "antd/dist/antd.css";
 
-function Customerlist(props) {
+function Customerlist() {
 
     const [customers, setCustomers] = useState([]);
     const [gridApi, setGridApi] = useState(null);
