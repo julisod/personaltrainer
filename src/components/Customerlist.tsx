@@ -7,7 +7,7 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 
-import Snackbar from '@mui/material/Snackbar';
+import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 
 import Button from '@mui/material/Button';
@@ -17,19 +17,35 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Popconfirm } from 'antd';
 import "antd/dist/antd.css";
 
-function Customerlist() {
+interface Props {
 
-    const [customers, setCustomers] = useState([]);
-    const [gridApi, setGridApi] = useState(null);
-    const [open, setOpen] = useState(false);
-    const [msg, setMsg] = useState("");
-    const [errorOpen, setErrorOpen] = useState(false);
-    const [errorMsg, setErrorMsg] = useState("");
+}
+
+interface Customer {
+    firstname: string,
+    lastname: string,
+    streetaddress: string,
+    postcode: string,
+    city: string,
+    email: string,
+    phone: string,
+    content: any,
+    links: any[]
+}
+
+const Customerlist: React.FC = () => {
+
+    const [customers, setCustomers] = useState<Customer[]>([]);
+    const [gridApi, setGridApi] = useState<any>(null);
+    const [open, setOpen] = useState<boolean>(false);
+    const [msg, setMsg] = useState<string>("");
+    const [errorOpen, setErrorOpen] = useState<boolean>(false);
+    const [errorMsg, setErrorMsg] = useState<string>("");
 
     //this is for the error snackbar
-    const Alert = React.forwardRef(function Alert(props, ref) {
-        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-      });
+    const Alert: any = React.forwardRef((props, ref: any) =>
+        <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
+    );
 
     //data for aggrid
     const columns = [
@@ -44,15 +60,15 @@ function Customerlist() {
             headerName: "",
             field: "links.0.href",
             width: 65,
-            cellRendererFramework: params => <EditCustomer updateCustomer={updateCustomer} params={params} />
+            cellRendererFramework: (params: any) => <EditCustomer updateCustomer={updateCustomer} params={params} />
         },
         {
             headerName: "",
             field: "links.0.href",
             width: 65,
-            cellRendererFramework: params => 
+            cellRendererFramework: (params: any) => 
             <Popconfirm
-                title="Are you sure to delete this customer?"
+                title="Are you sure you want to delete this customer?"
                 onConfirm={() => deleteCustomer(params.value)}
                 okText="Yes"
                 cancelText="No"
@@ -65,7 +81,7 @@ function Customerlist() {
         }
     ]
 
-    const onGridReady = (params) => {
+    const onGridReady = (params: any) => {
         setGridApi(params.api);
     };
 
@@ -84,13 +100,13 @@ function Customerlist() {
         fetchCustomers();
     }, [])
     
-    const handleErrorClose = (event, reason) => {
+    const handleErrorClose = (event: any, reason: SnackbarCloseReason) => {
         if (reason !== 'clickaway') {
             setErrorOpen(false);
         }
       };
 
-    const deleteCustomer = (url) => {
+    const deleteCustomer = (url: string) => {
         fetch(url, { method: "DELETE"})
         .then(response => {
             if (response.ok) {
@@ -105,7 +121,7 @@ function Customerlist() {
         .catch(err => console.error(err))
     }
 
-    const newCustomer = (customer) => {
+    const newCustomer = (customer: Customer) => {
         addCustomer(customer)
         .then(response => {
             if (response.ok) {
@@ -120,7 +136,7 @@ function Customerlist() {
         .catch(err => console.error(err))
     }
 
-    const updateCustomer = (url, updatedCustomer) => {
+    const updateCustomer = (url: string, updatedCustomer: Customer) => {
         editItem(url, updatedCustomer)
         .then(response => {
             if (response.ok) {
