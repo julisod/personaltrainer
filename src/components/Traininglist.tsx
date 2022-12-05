@@ -18,13 +18,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Popconfirm } from 'antd';
 import "antd/dist/antd.css";
 
-import { Training } from '../../types';
+import { NewTraining, ExistingTraining } from '../../types';
 
 
 
 const Traininglist: React.FC = () => {
 
-    const [trainings, setTrainings] = useState<Training[]>([]);
+    const [trainings, setTrainings] = useState<ExistingTraining[]>([]);
     const [gridApi, setGridApi] = useState<any>(null);
     const [open, setOpen] = useState<boolean>(false);
     const [msg, setMsg] = useState<string>("");
@@ -116,7 +116,7 @@ const Traininglist: React.FC = () => {
         .catch(err => console.error(err))
     }
 
-    const newTraining = (training: Training) => {
+    const newTraining = (training: NewTraining) => {
         addTraining(training)
         .then(response => {
             if (response.ok) {
@@ -131,7 +131,7 @@ const Traininglist: React.FC = () => {
         .catch(err => console.error(err))
     }
 
-    const updateTraining = (id: number, updatedTraining: Training) => {
+    const updateTraining = (id: number, updatedTraining: ExistingTraining) => {
         editItem("https://customerrest.herokuapp.com/api/trainings/" + id, updatedTraining)
         .then(response => {
             if (response.ok) {

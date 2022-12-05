@@ -1,4 +1,6 @@
-export const addCustomer = (customer) => {
+import { ExistingCustomer, ExistingTraining, NewCustomer, NewTraining } from "../../types";
+
+export const addCustomer = (customer: NewCustomer) => {
     return fetch("https://customerrest.herokuapp.com/api/customers", {
         method: "POST",
         headers: { "Content-type" : "application/json"},
@@ -6,7 +8,7 @@ export const addCustomer = (customer) => {
     })
 }
 
-export const addTraining = (training) => {
+export const addTraining = (training: NewTraining) => {
     training.date = training.date.toISOString();
      return fetch("https://customerrest.herokuapp.com/api/trainings", {
         method: "POST",
@@ -15,7 +17,7 @@ export const addTraining = (training) => {
     })
 }
 
-export const editItem = (url, updatedObject) => {
+export const editItem = (url: string, updatedObject: ExistingCustomer | ExistingTraining) => {
     return fetch(url, {
         method: "PUT",
         headers: { "Content-Type" : "application/json"},

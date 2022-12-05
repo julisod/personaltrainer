@@ -20,7 +20,7 @@ export interface Training {
 }
 
 export interface NewTraining {
-    date: Date;
+    date: any;
     duration: string;
     activity: string;
     customer: any;
