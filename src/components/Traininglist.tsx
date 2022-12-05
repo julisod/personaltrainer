@@ -8,29 +8,33 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 
-import Snackbar from '@mui/material/Snackbar';
+import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 
-import Button from '@mui/material/Button'
+import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { Popconfirm } from 'antd';
 import "antd/dist/antd.css";
 
+import { Training } from '../../types';
 
-function Traininglist(props) {
-    const [trainings, setTrainings] = useState([]);
-    const [gridApi, setGridApi] = useState(null);
-    const [open, setOpen] = useState(false);
-    const [msg, setMsg] = useState("");
-    const [errorOpen, setErrorOpen] = useState(false);
-    const [errorMsg, setErrorMsg] = useState("");
+
+
+const Traininglist: React.FC = () => {
+
+    const [trainings, setTrainings] = useState<Training[]>([]);
+    const [gridApi, setGridApi] = useState<any>(null);
+    const [open, setOpen] = useState<boolean>(false);
+    const [msg, setMsg] = useState<string>("");
+    const [errorOpen, setErrorOpen] = useState<boolean>(false);
+    const [errorMsg, setErrorMsg] = useState<string>("");
 
     //this is for the error snackbar
-    const Alert = React.forwardRef(function Alert(props, ref) {
-        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-      });
+    const Alert: any = React.forwardRef((props, ref: any) =>
+        <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
+      );
 
     //data for aggrid
     const columns = [
@@ -39,28 +43,28 @@ function Traininglist(props) {
             headerName:"Date",
             
             sortable: true, filter: true,
-            valueGetter: params =>
+            valueGetter: (params: any) =>
                 dayjs(params.data.date).format("DD.MM.YYYY (ddd) H:mm")
         },
         {field: "duration", sortable: true, filter: true, headerName:"Duration (min)", width: 150},
         {
             sortable: true, filter: true,
             headerName:"Customer",
-            valueGetter: params => (params.data.customer == null) ? "" : params.data.customer.firstname + " " + params.data.customer.lastname
+            valueGetter: (params: any) => (params.data.customer == null) ? "" : params.data.customer.firstname + " " + params.data.customer.lastname
         },
         {
             headerName: "",
             field: "id",
             width: 65,
-            cellRendererFramework: params => <EditTraining updateTraining={updateTraining} params={params} />
+            cellRendererFramework: (params: any) => <EditTraining updateTraining={updateTraining} params={params} />
         },
         {
             headerName: "",
             field: "id",
             width: 65,
-            cellRendererFramework: params => 
+            cellRendererFramework: (params: any) => 
             <Popconfirm
-                title="Are you sure to delete this training?"
+                title="Are you sure you want to delete this training?"
                 onConfirm={() => deleteTraining(params.value)}
                 okText="Yes"
                 cancelText="No"
@@ -72,7 +76,7 @@ function Traininglist(props) {
         }
     ]
 
-    const onGridReady = (params) => {
+    const onGridReady = (params: any) => {
         setGridApi(params.api);
     };
 
@@ -91,29 +95,28 @@ function Traininglist(props) {
         fetchTrainings();
     }, [])
     
-    const handleErrorClose = (event, reason) => {
-        if (reason === 'clickaway') {
-          return;
+    const handleErrorClose = (event: React.SyntheticEvent | Event, reason: SnackbarCloseReason): void => {
+        if (reason !== 'clickaway') {
+            setErrorOpen(false);
         }
-        setErrorOpen(false);
       };
 
-    const deleteTraining = (id) => {
+    const deleteTraining = (id: number) => {
         fetch("https://customerrest.herokuapp.com/api/trainings/" + id, { method: "DELETE"})
         .then(response => {
             if (response.ok) {
-                fetchTrainings();
                 setMsg("Poisto onnistui");
                 setOpen(true);
             } else {
                 setErrorMsg("Jokin meni pieleen poistamisessa :(");
                 setErrorOpen(true);
             }
+            fetchTrainings();
         })
         .catch(err => console.error(err))
     }
 
-    const newTraining = (training) => {
+    const newTraining = (training: Training) => {
         addTraining(training)
         .then(response => {
             if (response.ok) {
@@ -128,7 +131,7 @@ function Traininglist(props) {
         .catch(err => console.error(err))
     }
 
-    const updateTraining = (id, updatedTraining) => {
+    const updateTraining = (id: number, updatedTraining: Training) => {
         editItem("https://customerrest.herokuapp.com/api/trainings/" + id, updatedTraining)
         .then(response => {
             if (response.ok) {

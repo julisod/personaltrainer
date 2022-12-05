@@ -17,25 +17,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Popconfirm } from 'antd';
 import "antd/dist/antd.css";
 
-interface Props {
-
-}
-
-interface Customer {
-    firstname: string,
-    lastname: string,
-    streetaddress: string,
-    postcode: string,
-    city: string,
-    email: string,
-    phone: string,
-    content: any,
-    links: any[]
-}
+import { ExistingCustomer, NewCustomer } from "../../types";
 
 const Customerlist: React.FC = () => {
 
-    const [customers, setCustomers] = useState<Customer[]>([]);
+    const [customers, setCustomers] = useState<ExistingCustomer[]>([]);
     const [gridApi, setGridApi] = useState<any>(null);
     const [open, setOpen] = useState<boolean>(false);
     const [msg, setMsg] = useState<string>("");
@@ -100,7 +86,7 @@ const Customerlist: React.FC = () => {
         fetchCustomers();
     }, [])
     
-    const handleErrorClose = (event: any, reason: SnackbarCloseReason) => {
+    const handleErrorClose = (event: React.SyntheticEvent | Event, reason: SnackbarCloseReason): void => {
         if (reason !== 'clickaway') {
             setErrorOpen(false);
         }
@@ -121,7 +107,7 @@ const Customerlist: React.FC = () => {
         .catch(err => console.error(err))
     }
 
-    const newCustomer = (customer: Customer) => {
+    const newCustomer = (customer: NewCustomer) => {
         addCustomer(customer)
         .then(response => {
             if (response.ok) {
@@ -136,7 +122,7 @@ const Customerlist: React.FC = () => {
         .catch(err => console.error(err))
     }
 
-    const updateCustomer = (url: string, updatedCustomer: Customer) => {
+    const updateCustomer = (url: string, updatedCustomer: ExistingCustomer) => {
         editItem(url, updatedCustomer)
         .then(response => {
             if (response.ok) {

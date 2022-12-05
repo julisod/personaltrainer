@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import "../App.css";
 
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -8,51 +7,51 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 
-import IconButton from '@mui/material/IconButton';
-import EditIcon from '@mui/icons-material/Edit';
+import { NewCustomer } from "../../types";
 
-function EditCustomer(props) {
-    const [open, setOpen] = useState(false);
+interface ComponentProps { newCustomer: (customer: NewCustomer) => void};
+
+function AddCustomer(props: ComponentProps) {
+    const [open, setOpen] = useState<boolean>(false);
     const [customer, setCustomer] = useState({firstname:"", lastname:"", streetaddress:"", postcode:"", city:"", email:"", phone:""})
 
     const handleClickOpen = () => {
-        console.log(props);
-        setCustomer({
-            firstname: props.params.data.firstname,
-            lastname: props.params.data.lastname,
-            streetaddress: props.params.data.streetaddress,
-            postcode: props.params.data.postcode,
-            city: props.params.data.city,
-            email: props.params.data.email,
-            phone: props.params.data.phone
-        })
-        setOpen(true);
+      setOpen(true);
     };
-
+  
     const handleClose = () => {
-        setOpen(false);
+      setOpen(false);
+      setCustomer({firstname:"", lastname:"", streetaddress:"", postcode:"", city:"", email:"", phone:"" });
+    };
+  
+    const handleSave = () => {
+        props.newCustomer(customer);
+        handleClose();
     };
 
-    const inputChanged = (event) => {
+    const inputChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCustomer({...customer, [event.target.name]: event.target.value});
-        };
-
-    const handleSave = () => {
-        props.updateCustomer(props.params.value, customer);
-        setCustomer({firstname:"", lastname:"", streetaddress:"", postcode:"", city:"", email:"", phone:"" });
-        handleClose();
-        };
-
+        console.log(props)
+    };
 
     return (
       <div className="App">
-        <IconButton onClick={handleClickOpen}>
-          <EditIcon />
-        </IconButton>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Edit customer</DialogTitle>
+        <Button variant="contained" color="success" onClick={handleClickOpen} sx={{margin: "15px", backgroundColor: '#3c9690'}}>
+          Add customer
+        </Button>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          //submit the form on ENTER
+          onKeyUp={(e) => {
+             if (e.key === "Enter") {
+              handleSave();
+            }
+          }}
+        >
+          <DialogTitle>New Customer</DialogTitle>
           <DialogContent>
-            <TextField
+          <TextField
               autoFocus
               required
               name="firstname"
@@ -74,6 +73,7 @@ function EditCustomer(props) {
               variant="standard"
             />
             <TextField
+              required
               name="streetaddress"
               value={customer.streetaddress}
               onChange={inputChanged}
@@ -83,6 +83,7 @@ function EditCustomer(props) {
               variant="standard"
             />
             <TextField
+              required
               name="postcode"
               value={customer.postcode}
               onChange={inputChanged}
@@ -92,6 +93,7 @@ function EditCustomer(props) {
               variant="standard"
             />
             <TextField
+              required
               name="city"
               value={customer.city}
               onChange={inputChanged}
@@ -123,11 +125,11 @@ function EditCustomer(props) {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleSave}>Update</Button>
+            <Button onClick={handleSave}>Add</Button>
           </DialogActions>
         </Dialog>
       </div>
     );
 }
 
-export default EditCustomer;
+export default AddCustomer;
