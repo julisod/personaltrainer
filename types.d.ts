@@ -8,13 +8,19 @@ export interface NewCustomer {
     phone: string,
 }
 
-export interface ExistingCustomer extends NewCustomer {
-    id: integer;
-    content: any,
-    links: any[]
+interface Link {
+    rel: string;
+    href: string
 }
 
-export interface Training {
+export interface ExistingCustomer extends NewCustomer {
+    id: integer;
+    content: any;
+    links: Link[];
+    content: never[]
+}
+
+interface Training {
     activity: string;
 
 }

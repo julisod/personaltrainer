@@ -20,8 +20,6 @@ import "antd/dist/antd.css";
 
 import { NewTraining, ExistingTraining } from '../../types';
 
-
-
 const Traininglist: React.FC = () => {
 
     const [trainings, setTrainings] = useState<ExistingTraining[]>([]);

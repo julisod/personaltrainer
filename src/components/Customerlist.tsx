@@ -90,7 +90,7 @@ const Customerlist: React.FC = () => {
         if (reason !== 'clickaway') {
             setErrorOpen(false);
         }
-      };
+    };
 
     const deleteCustomer = (url: string) => {
         fetch(url, { method: "DELETE"})
