@@ -5,18 +5,20 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 
+import { ExistingTraining } from '../../types';
+
 function Calendar() {
-    const [trainings, setTrainings] = useState([]);
+    const [trainings, setTrainings] = useState<ExistingTraining[]>([]);
     
     const fetchTrainings = () => {
         fetch("https://customerrest.herokuapp.com/gettrainings")
         .then(response => response.json())
-        .then(setTrainings([]))
-        .then(responseData => responseData.forEach(element => {
-            let end = dayjs(element.date).add(element.duration, "minute").toDate();
-            setTrainings(trainings => [...trainings, {title: element.activity, start: element.date, end: end}]);
+        .then(data => {
+            setTrainings(data.map((training: ExistingTraining) => {
+                let end = dayjs(training.date).add(training.duration, "minute").toDate();
+                return {title: training.activity, start: training.date, end: end}
+            }))
         })
-        )
         .catch(err => console.error(err))
     }
 

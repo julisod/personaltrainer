@@ -17,7 +17,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 function App() {
   const [nav, setNav] = React.useState("customerlist");
 
-  const handleChange = (event, value) => {
+  const handleChange = (event: React.SyntheticEvent<Element, Event>, value: string) => {
     setNav(value);
   };
 

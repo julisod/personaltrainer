@@ -13,10 +13,16 @@ import EditIcon from '@mui/icons-material/Edit';
 import AdapterDateFns from '@mui/lab/AdapterDayjs';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateTimePicker from '@mui/lab/DateTimePicker';
+import { ExistingTraining } from '../../types';
 
-function EditTraining(props) {
+interface ComponentProps {
+    updateTraining: (id: number, updatedTraining: ExistingTraining) => void;
+    params: any;
+}
+
+function EditTraining(props: ComponentProps) {
     const [open, setOpen] = useState(false);
-    const [training, setTraining] = useState({date: new Date(), duration:"", activity:""});
+    const [training, setTraining] = useState(props.params.data);
     const [customerName, setCustomerName] = useState("");
 
     const handleClickOpen = () => {
@@ -34,11 +40,11 @@ function EditTraining(props) {
         setOpen(false);
     };
 
-    const inputChanged = (event) => {
+    const inputChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTraining({...training, [event.target.name]: event.target.value});
     };
 
-    const changeDate = (value) => {
+    const changeDate = (value: any) => {
         setTraining({...training, date: value});
     };
 
@@ -52,50 +58,50 @@ function EditTraining(props) {
     return (
       <div className="App">
         <IconButton onClick={handleClickOpen}>
-          <EditIcon />
+            <EditIcon />
         </IconButton>
         <Dialog open={open} onClose={handleClose}>
             {/* Tämän olisi voinut koodata silleen että pystyy samalla vaihtaa asiakkaankin, 
             mutta mielestäni ei tunnu järkevältä, että tietyn asiakkaan treenin voi vaan siirtää toiselle */}
-          <DialogTitle>Edit training for {customerName}</DialogTitle>
-          <DialogContent>
-            <TextField
-                required
-                name="activity"
-                value={training.activity}
-                onChange={inputChanged}
-                margin="dense"
-                label="Activity"
-                fullWidth
-                variant="standard"
-            />
-            <TextField
-                required
-                name="duration"
-                value={training.duration}
-                onChange={inputChanged}
-                margin="dense"
-                label="Duration (min)"
-                fullWidth
-                variant="standard"
-            />
-            <LocalizationProvider dateAdapter={AdapterDateFns} >
-                <DateTimePicker
-                    name="date"
-                    label="Date"
-                    ampm={false}
-                    inputFormat="DD.MM.YYYY HH:mm"
-                    mask="__.__.____ __:__"
-                    value={training.date}
-                    onChange={changeDate}
-                    renderInput={(params) => <TextField {...params} />}
+            <DialogTitle>Edit training for {customerName}</DialogTitle>
+            <DialogContent>
+                <TextField
+                    required
+                    name="activity"
+                    value={training.activity}
+                    onChange={inputChanged}
+                    margin="dense"
+                    label="Activity"
+                    fullWidth
+                    variant="standard"
                 />
-            </LocalizationProvider>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleSave}>Update</Button>
-          </DialogActions>
+                <TextField
+                    required
+                    name="duration"
+                    value={training.duration}
+                    onChange={inputChanged}
+                    margin="dense"
+                    label="Duration (min)"
+                    fullWidth
+                    variant="standard"
+                />
+                <LocalizationProvider dateAdapter={AdapterDateFns} >
+                    <DateTimePicker
+                        name="date"
+                        label="Date"
+                        ampm={false}
+                        inputFormat="DD.MM.YYYY HH:mm"
+                        mask="__.__.____ __:__"
+                        value={training.date}
+                        onChange={changeDate}
+                        renderInput={(params: any) => <TextField {...params} />}
+                    />
+                </LocalizationProvider>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleSave}>Update</Button>
+            </DialogActions>
         </Dialog>
       </div>
     );
